@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -6,6 +7,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Widget NiceRectangle({Widget child, Color color, bool glow = true}) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: glow ? [BoxShadow(color: color, blurRadius: 8)] : null,
+      ),
+      child: child,
+    );
+  }
+
+  Widget FuckingDot({Color color, double size = 8}) => Container(
+        padding: EdgeInsets.all(size),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+      );
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -26,7 +44,30 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Center(
         child: Container(
-          child: Text('Main page'),
+          child: NiceRectangle(
+            color: theme.colorScheme.primary,
+            child: ListView(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Server status:',
+                      style: theme.textTheme.headline4,
+                    ),
+                    FuckingDot(color: Colors.red),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Satellite status:', style: theme.textTheme.headline4),
+                    FuckingDot(color: Colors.red),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
