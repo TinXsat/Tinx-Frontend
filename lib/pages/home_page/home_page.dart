@@ -19,9 +19,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget FuckingDot({Color color, double size = 8}) => Container(
+  Widget FuckingDot({Color color, double size = 8, bool glow = true}) =>
+      Container(
         padding: EdgeInsets.all(size),
-        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: color,
+          boxShadow: glow
+              ? [BoxShadow(color: color, blurRadius: 8, spreadRadius: 2)]
+              : null,
+        ),
       );
 
   @override
@@ -45,7 +52,7 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Container(
           child: NiceRectangle(
-            color: theme.colorScheme.primary,
+            color: theme.colorScheme.background,
             child: ListView(
               children: [
                 Row(
@@ -62,7 +69,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Satellite status:', style: theme.textTheme.headline4),
-                    FuckingDot(color: Colors.red),
+                    FuckingDot(color: Colors.green),
                   ],
                 ),
               ],
