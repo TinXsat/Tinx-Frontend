@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tinx_frontend/pages/home_page/home_page.dart';
+import 'package:tinx_frontend/theme/themes.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,8 +11,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TinX',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+      theme: lightTheme(),
+      darkTheme: darkTheme(),
       themeMode: ThemeMode.system,
       home: HomePage(),
     );
