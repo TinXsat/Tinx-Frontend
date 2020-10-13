@@ -68,7 +68,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     final theme = Theme.of(context);
     // PLACEHOLDER VALUES
     // Replace these with stuff from Provider or something
-    var _serverConnected = true;
+    var _serverConnected = false;
     var _satelliteConnected = false;
     var _satelliteBatteryPercent = 65;
     var _satelliteCpuTemp = 40;

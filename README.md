@@ -1,7 +1,9 @@
 # Tinx-Frontend
 
-This is a frontend app for TinX sattelite
+This is a frontend app for TinX satellite
 
-As you can see, it is empty by now, but it will likeley be a Flutter app, at best compiled to web app, that will communicate with some back and and display data in nice graphs and fireworks!
+It is written in Flutter - thanks to it, it can be compiled to Android, iOS and Web App
+
+It serves a nice dashboard with all the data :tada:
 
 Licensed under GPLv3, so Miss Kuźniar happy here ^_^
