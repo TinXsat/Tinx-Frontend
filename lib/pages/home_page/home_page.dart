@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -49,32 +50,37 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: Center(
-        child: Container(
-          child: NiceRectangle(
-            color: theme.colorScheme.background,
-            child: ListView(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Server status:',
-                      style: theme.textTheme.headline4,
-                    ),
-                    FuckingDot(color: Colors.red),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Satellite status:', style: theme.textTheme.headline4),
-                    FuckingDot(color: Colors.green),
-                  ],
-                ),
-              ],
+      body: Container(
+        padding: EdgeInsets.all(16),
+        child: StaggeredGridView.count(
+          crossAxisCount:
+              (MediaQuery.of(context).size.width / 450).round().clamp(1, 30),
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          children: [
+            NiceRectangle(
+              color: theme.backgroundColor,
+              child: Text('Dupa', style: theme.textTheme.headline1),
             ),
-          ),
+            NiceRectangle(
+              color: theme.backgroundColor,
+              child: Text('Dupa', style: theme.textTheme.headline4),
+            ),
+            NiceRectangle(
+                color: theme.backgroundColor,
+                child: Column(
+                  children: [
+                    Text('Dupa', style: theme.textTheme.headline3),
+                    Text('Dupa', style: theme.textTheme.headline3),
+                    Text('Dupa', style: theme.textTheme.headline3),
+                  ],
+                )),
+          ],
+          staggeredTiles: [
+            StaggeredTile.fit(1),
+            StaggeredTile.fit(1),
+            StaggeredTile.fit(1),
+          ],
         ),
       ),
     );
