@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'TinX',
       theme: lightTheme(),
       darkTheme: darkTheme(),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark,
       home: HomePage(),
     );
   }
