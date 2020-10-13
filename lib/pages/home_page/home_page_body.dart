@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:latlong/latlong.dart';
 
 Widget NiceRectangle({Widget child, Color color, bool glow = true}) =>
     Container(
@@ -24,6 +26,37 @@ Widget FuckingDot({Color color, double size = 8, bool glow = true}) =>
       ),
     );
 
+Widget SatelliteLocationMap(
+        {@required LatLng point, MapController mapController}) =>
+    AspectRatio(
+      aspectRatio: 1.0,
+      child: FlutterMap(
+        mapController: mapController ?? MapController(),
+        options: MapOptions(
+          center: point,
+          maxZoom: 18.49,
+        ),
+        layers: [
+          TileLayerOptions(
+            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            subdomains: ['a', 'b', 'c'],
+          ),
+          MarkerLayerOptions(
+            markers: [
+              Marker(
+                point: point,
+                builder: (_) => Icon(
+                  Icons.location_on,
+                  color: Colors.black,
+                  size: 36,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
 class HomePageBody extends StatefulWidget {
   @override
   _HomePageBodyState createState() => _HomePageBodyState();
@@ -40,8 +73,8 @@ class _HomePageBodyState extends State<HomePageBody> {
     var _satelliteBatteryPercent = 65;
     var _satelliteCpuTemp = 40;
     var _satelliteLoRaRssi = -90;
-    var _satelliteLat = 49.88345;
-    var _satelliteLng = 19.49253;
+    var _satelliteLatLng = LatLng(49.88345, 19.49253);
+    final mapController = MapController();
 
     Widget _valueDataPair(String valueName, String value) => Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,9 +129,13 @@ class _HomePageBodyState extends State<HomePageBody> {
               // TODO: Make this activate some Intent to opening maps app
               children: [
                 Text('Lat/Lng'),
-                SelectableText('$_satelliteLat\n$_satelliteLng')
+                SelectableText(
+                    '${_satelliteLatLng.latitude}\n${_satelliteLatLng
+                        .longitude}')
               ],
             ),
+            SatelliteLocationMap(
+                point: _satelliteLatLng, mapController: mapController),
           ],
         ),
       )
