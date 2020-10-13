@@ -74,6 +74,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     var _satelliteCpuTemp = 40;
     var _satelliteLoRaRssi = -90;
     var _satelliteLatLng = LatLng(49.88345, 19.49253);
+    var _satelliteHeight = 2137;
     final mapController = MapController();
 
     Widget _valueDataPair(String valueName, String value) => Row(
@@ -81,6 +82,7 @@ class _HomePageBodyState extends State<HomePageBody> {
           children: [Text(valueName), Text(value)],
         );
 
+    final _spaceBetweenStuff = 10.0;
     final List<Widget> _tiles = [
       NiceRectangle(
         color: theme.colorScheme.background,
@@ -93,7 +95,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 FuckingDot(color: _serverConnected ? Colors.green : Colors.red)
               ],
             ),
-            SizedBox(height: 8),
+            SizedBox(height: _spaceBetweenStuff),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -110,8 +112,11 @@ class _HomePageBodyState extends State<HomePageBody> {
         child: Column(
           children: [
             Text('Satellite status ', style: theme.textTheme.headline4),
+            SizedBox(height: _spaceBetweenStuff),
             _valueDataPair('Battery ', '$_satelliteBatteryPercent %'),
+            SizedBox(height: _spaceBetweenStuff),
             _valueDataPair('CPU Temperature ', '$_satelliteCpuTemp °C'),
+            SizedBox(height: _spaceBetweenStuff),
             _valueDataPair('LoRa signal RSSI ', '$_satelliteLoRaRssi dBm'),
           ],
         ),
@@ -124,6 +129,7 @@ class _HomePageBodyState extends State<HomePageBody> {
               'Satellite location',
               style: theme.textTheme.headline4,
             ),
+            SizedBox(height: _spaceBetweenStuff),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               // TODO: Make this activate some Intent to opening maps app
@@ -134,11 +140,16 @@ class _HomePageBodyState extends State<HomePageBody> {
                         .longitude}')
               ],
             ),
-            SatelliteLocationMap(
-                point: _satelliteLatLng, mapController: mapController),
+            _valueDataPair('Height', '$_satelliteHeight m'),
+            SizedBox(height: _spaceBetweenStuff),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: SatelliteLocationMap(
+                  point: _satelliteLatLng, mapController: mapController),
+            ),
           ],
         ),
-      )
+      ),
     ];
 
     return Container(
