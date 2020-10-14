@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong/latlong.dart';
+import 'package:neat_periodic_task/neat_periodic_task.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tinx_frontend/shared_prefs.dart';
 
@@ -21,7 +22,7 @@ class SatelliteProvider with ChangeNotifier {
   final sat = _Satellite();
   bool serverIsConnected = false;
 
-  Future<bool> refreshData() async {
+  Future<bool> _loadData() async {
     print('Refreshing data...');
     final sp = await SharedPreferences.getInstance();
     url = sp.getString(KEYS.API_URL) ?? url;
@@ -52,11 +53,40 @@ class SatelliteProvider with ChangeNotifier {
     res = await cli.get(url + '/satellite/location');
     if (res.statusCode >= 200 && res.statusCode < 300) {
       var json = jsonDecode(res.body);
-      sat.locationLatLng = LatLng(json['latitude'], json['longitude']);
+      if (json['latitude'] != null && json['longitude'] != null)
+        sat.locationLatLng = LatLng(json['latitude'], json['longitude']);
       sat.locationHeight = json['height'];
     }
-    notifyListeners();
-
     return true;
+  }
+
+  NeatPeriodicTaskScheduler scheduler;
+
+  void _refresh() async {
+    bool success = false;
+    try {
+      success = await _loadData()
+          .timeout(Duration(seconds: 3), onTimeout: () => false);
+    } catch (e, s) {
+      print('Error when connecting to server:');
+      print(e);
+      print(s);
+      success = false;
+    }
+    print('Refreshing data ${success ? 'successful' : 'failed'}');
+    serverIsConnected = success;
+    notifyListeners();
+  }
+
+  SatelliteProvider() {
+    scheduler = NeatPeriodicTaskScheduler(
+      name: 'server-ping',
+      interval: Duration(seconds: 1),
+      timeout: Duration(seconds: 10),
+      task: _refresh,
+      minCycle: Duration(milliseconds: 200),
+    );
+
+    scheduler.start();
   }
 }
