@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -21,31 +22,34 @@ class SatelliteProvider with ChangeNotifier {
   bool serverIsConnected = false;
 
   Future<bool> refreshData() async {
+    print('Refreshing data...');
     final sp = await SharedPreferences.getInstance();
     url = sp.getString(KEYS.API_URL) ?? url;
-    http.Response res;
+    print('Server url: $url');
 
-    res = await http.get(url + '/satellite');
+    var cli = http.Client();
+    http.Response res;
+    res = await cli.get(url + '/satellite');
     if (res.statusCode >= 200 && res.statusCode < 300) {
       sat.isConnected = jsonDecode(res.body)['connected'];
     }
 
-    res = await http.get(url + '/satellite/battery');
+    res = await cli.get(url + '/satellite/battery');
     if (res.statusCode >= 200 && res.statusCode < 300) {
       sat.batteryPercentage = jsonDecode(res.body)['percentage'];
     }
 
-    res = await http.get(url + '/satellite/cpu/temperature');
+    res = await cli.get(url + '/satellite/cpu/temperature');
     if (res.statusCode >= 200 && res.statusCode < 300) {
       sat.cpuTemperature = jsonDecode(res.body)['celcius'];
     }
 
-    res = await http.get(url + '/satellite/lora/signal');
+    res = await cli.get(url + '/satellite/lora/signal');
     if (res.statusCode >= 200 && res.statusCode < 300) {
       sat.loraSignalRssi = jsonDecode(res.body)['rssi'];
     }
 
-    res = await http.get(url + '/satellite/location');
+    res = await cli.get(url + '/satellite/location');
     if (res.statusCode >= 200 && res.statusCode < 300) {
       var json = jsonDecode(res.body);
       sat.locationLatLng = LatLng(json['latitude'], json['longitude']);
