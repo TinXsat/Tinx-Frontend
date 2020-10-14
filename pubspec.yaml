@@ -26,8 +26,10 @@ dependencies:
 
   # UI stuff
   cupertino_icons: ^1.0.0
+  mdi: ^4.0.0
   flutter_staggered_grid_view: ^0.3.2
   flutter_map: ^0.10.1+1
+  shared_preferences_settings: ^1.2.0
 
   # Logic stuff
   shared_preferences: ^0.5.12
