@@ -18,6 +18,7 @@ class _Satellite {
 class SatelliteProvider with ChangeNotifier {
   String url = DEFAULT.API_URL;
   final sat = _Satellite();
+  bool serverIsConnected = false;
 
   Future<bool> refreshData() async {
     final sp = await SharedPreferences.getInstance();

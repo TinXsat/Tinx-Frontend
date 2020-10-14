@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:latlong/latlong.dart';
+import 'package:provider/provider.dart';
+import 'package:tinx_frontend/providers/satellite_provider.dart';
 
 Widget NiceRectangle({Widget child, Color color, bool glow = true}) =>
     Container(
@@ -65,16 +67,8 @@ class HomePageBody extends StatefulWidget {
 class _HomePageBodyState extends State<HomePageBody> {
   @override
   Widget build(BuildContext context) {
+    var sat = Provider.of<SatelliteProvider>(context);
     final theme = Theme.of(context);
-    // PLACEHOLDER VALUES
-    // Replace these with stuff from Provider or something
-    var _serverConnected = false;
-    var _satelliteConnected = false;
-    var _satelliteBatteryPercent = 65;
-    var _satelliteCpuTemp = 40;
-    var _satelliteLoRaRssi = -90;
-    var _satelliteLatLng = LatLng(49.88345, 19.49253);
-    var _satelliteHeight = 2137;
     final mapController = MapController();
 
     Widget _valueDataPair(String valueName, String value) => Row(
@@ -92,7 +86,8 @@ class _HomePageBodyState extends State<HomePageBody> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Server connected', style: theme.textTheme.headline5),
-                FuckingDot(color: _serverConnected ? Colors.green : Colors.red)
+                FuckingDot(
+                    color: sat.serverIsConnected ? Colors.green : Colors.red)
               ],
             ),
             SizedBox(height: _spaceBetweenStuff),
@@ -101,7 +96,9 @@ class _HomePageBodyState extends State<HomePageBody> {
               children: [
                 Text('Satellite connected', style: theme.textTheme.headline5),
                 FuckingDot(
-                    color: _satelliteConnected ? Colors.green : Colors.red)
+                    color: sat.sat.isConnected ?? false
+                        ? Colors.green
+                        : Colors.red)
               ],
             ),
           ],
@@ -113,11 +110,12 @@ class _HomePageBodyState extends State<HomePageBody> {
           children: [
             Text('Satellite status ', style: theme.textTheme.headline4),
             SizedBox(height: _spaceBetweenStuff),
-            _valueDataPair('Battery ', '$_satelliteBatteryPercent %'),
+            _valueDataPair('Battery ', '${sat.sat.batteryPercentage} %'),
             SizedBox(height: _spaceBetweenStuff),
-            _valueDataPair('CPU Temperature ', '$_satelliteCpuTemp °C'),
+            _valueDataPair('CPU Temperature ', '${sat.sat.cpuTemperature} °C'),
             SizedBox(height: _spaceBetweenStuff),
-            _valueDataPair('LoRa signal RSSI ', '$_satelliteLoRaRssi dBm'),
+            _valueDataPair(
+                'LoRa signal RSSI ', '${sat.sat.loraSignalRssi} dBm'),
           ],
         ),
       ),
@@ -135,18 +133,25 @@ class _HomePageBodyState extends State<HomePageBody> {
               // TODO: Make this activate some Intent to opening maps app
               children: [
                 Text('Lat/Lng'),
-                SelectableText(
-                    '${_satelliteLatLng.latitude}\n${_satelliteLatLng
-                        .longitude}')
+                sat.sat.locationLatLng == null
+                    ? Text('Not available')
+                    : SelectableText(
+                  '${sat.sat.locationLatLng.latitude}\n'
+                      '${sat.sat.locationLatLng.longitude}',
+                )
               ],
             ),
-            _valueDataPair('Height', '$_satelliteHeight m'),
+            _valueDataPair('Height', '${sat.sat.locationHeight} m'),
             SizedBox(height: _spaceBetweenStuff),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: SatelliteLocationMap(
-                  point: _satelliteLatLng, mapController: mapController),
-            ),
+            // TODO: Add listener to update the map when location changes
+            if (sat.sat.locationLatLng != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: SatelliteLocationMap(
+                  point: sat.sat.locationLatLng,
+                  mapController: mapController,
+                ),
+              ),
           ],
         ),
       ),
@@ -156,7 +161,7 @@ class _HomePageBodyState extends State<HomePageBody> {
       padding: EdgeInsets.all(16),
       child: StaggeredGridView.count(
         crossAxisCount:
-            (MediaQuery.of(context).size.width / 450).round().clamp(1, 30),
+        (MediaQuery.of(context).size.width / 450).round().clamp(1, 30),
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
         children: _tiles,
