@@ -54,7 +54,12 @@ class SatelliteProvider with ChangeNotifier {
     if (res.statusCode >= 200 && res.statusCode < 300) {
       var json = jsonDecode(res.body);
       if (json['latitude'] != null && json['longitude'] != null)
-        sat.locationLatLng = LatLng(json['latitude'], json['longitude']);
+        sat.locationLatLng = LatLng(
+          json['latitude'].toDouble(),
+          json['longitude'].toDouble(),
+        );
+      else
+        sat.locationLatLng = null;
       sat.locationHeight = json['height'];
     }
     return true;
@@ -81,10 +86,10 @@ class SatelliteProvider with ChangeNotifier {
   SatelliteProvider() {
     scheduler = NeatPeriodicTaskScheduler(
       name: 'server-ping',
-      interval: Duration(seconds: 1),
+      interval: Duration(milliseconds: 500),
       timeout: Duration(seconds: 10),
       task: _refresh,
-      minCycle: Duration(milliseconds: 200),
+      minCycle: Duration(milliseconds: 50),
     );
 
     scheduler.start();
