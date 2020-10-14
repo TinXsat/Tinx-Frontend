@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:tinx_frontend/pages/home_page/home_page_body.dart';
+import 'package:tinx_frontend/pages/settings_page/settings_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,7 +23,13 @@ class _HomePageState extends State<HomePage> {
                 color: theme.colorScheme.primary.withOpacity(0.5),
               ),
             ),
-            ListTile(title: Text('Settings')),
+            ListTile(
+              title: Text('Settings'),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => SettingsPage()),
+              ),
+            ),
           ],
         ),
       ),
