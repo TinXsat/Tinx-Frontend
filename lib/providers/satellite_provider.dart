@@ -62,7 +62,7 @@ class SatelliteProvider with ChangeNotifier {
 
   NeatPeriodicTaskScheduler scheduler;
 
-  void _refresh() async {
+  Future<void> _refresh() async {
     bool success = false;
     try {
       success = await _loadData()
